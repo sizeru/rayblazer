@@ -1,3 +1,14 @@
+# The Rayblazer
+Is a performance focused CPU raytracer
+
+## How to build?
+From the root directory, run the following commands:
+mkdir build
+cd build
+cmake ..
+make rayblazer
+
+## Rationale
 Performance CPU Raytracer
 
 The long running explanation for why raytracing has not been done is because of
