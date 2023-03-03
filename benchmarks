@@ -1,0 +1,112 @@
+nate@framework:~$ stress-ng --matrix 0 -t 1m --times
+stress-ng: info:  [78108] setting to a 60 second run per stressor
+stress-ng: info:  [78108] dispatching hogs: 8 matrix
+stress-ng: info:  [78108] successful run completed in 60.00s (1 min, 0.00 secs)
+stress-ng: info:  [78108] for a 60.00s run time:
+stress-ng: info:  [78108]     480.04s available CPU time
+stress-ng: info:  [78108]     477.55s user time   ( 99.48%)
+stress-ng: info:  [78108]       0.04s system time (  0.01%)
+stress-ng: info:  [78108]     477.59s total time  ( 99.49%)
+stress-ng: info:  [78108] load average: 5.18 1.81 1.15
+nate@framework:~$ stress-ng --matrix 0 -t 1m --times --perf
+stress-ng: info:  [78156] setting to a 60 second run per stressor
+stress-ng: info:  [78156] dispatching hogs: 8 matrix
+stress-ng: info:  [78156] successful run completed in 60.00s (1 min, 0.00 secs)
+stress-ng: info:  [78156] Cannot read perf counters, do not have CAP_SYS_ADMIN capability or /proc/sys/kernel/perf_event_paranoid is set too high (2)
+stress-ng: info:  [78156] for a 60.00s run time:
+stress-ng: info:  [78156]     480.01s available CPU time
+stress-ng: info:  [78156]     477.55s user time   ( 99.49%)
+stress-ng: info:  [78156]       0.03s system time (  0.01%)
+stress-ng: info:  [78156]     477.58s total time  ( 99.49%)
+stress-ng: info:  [78156] load average: 5.77 2.69 1.53
+nate@framework:~$ sudo stress-ng --matrix 0 -t 1m --times --perf
+stress-ng: info:  [78184] setting to a 60 second run per stressor
+stress-ng: info:  [78184] dispatching hogs: 8 matrix
+stress-ng: info:  [78184] successful run completed in 61.63s (1 min, 1.63 secs)
+stress-ng: info:  [78184] matrix:
+stress-ng: info:  [78184]          1,244,682,333,992 CPU Cycles                     20.20 B/sec
+stress-ng: info:  [78184]          2,279,822,198,424 Instructions                   36.99 B/sec (1.832 instr. per cycle)
+stress-ng: info:  [78184]            287,875,210,272 Branch Instructions             4.67 B/sec
+stress-ng: info:  [78184]              2,205,861,552 Branch Misses                  35.79 M/sec ( 0.77%)
+stress-ng: info:  [78184]             18,229,263,048 Bus Cycles                      0.30 B/sec
+stress-ng: info:  [78184]          1,148,521,140,152 Total Cycles                   18.64 B/sec
+stress-ng: info:  [78184]                 30,272,136 Cache References                0.49 M/sec
+stress-ng: info:  [78184]                  2,443,280 Cache Misses                   39.64 K/sec ( 8.07%)
+stress-ng: info:  [78184]            565,137,925,960 Cache L1D Read                  9.17 B/sec
+stress-ng: info:  [78184]            287,629,338,592 Cache L1D Read Miss             4.67 B/sec
+stress-ng: info:  [78184]              4,889,487,216 Cache L1D Write                79.34 M/sec
+stress-ng: info:  [78184]                 39,162,248 Cache L1I Read Miss             0.64 M/sec
+stress-ng: info:  [78184]                  4,307,120 Cache LL Read                  69.89 K/sec
+stress-ng: info:  [78184]                    494,648 Cache LL Read Miss              8.03 K/sec
+stress-ng: info:  [78184]                  2,872,328 Cache LL Write                 46.61 K/sec
+stress-ng: info:  [78184]                    108,928 Cache LL Write Miss             1.77 K/sec
+stress-ng: info:  [78184]            565,539,826,720 Cache DTLB Read                 9.18 B/sec
+stress-ng: info:  [78184]                    701,000 Cache DTLB Read Miss           11.37 K/sec
+stress-ng: info:  [78184]              4,877,739,376 Cache DTLB Write               79.15 M/sec
+stress-ng: info:  [78184]                    640,648 Cache DTLB Write Miss          10.40 K/sec
+stress-ng: info:  [78184]                    354,576 Cache ITLB Read Miss            5.75 K/sec
+stress-ng: info:  [78184]            287,883,668,920 Cache BPU Read                  4.67 B/sec
+stress-ng: info:  [78184]              2,204,602,624 Cache BPU Read Miss            35.77 M/sec
+stress-ng: info:  [78184]                    425,328 Cache NODE Read                 6.90 K/sec
+stress-ng: info:  [78184]                          0 Cache NODE Read Miss            0.00 /sec 
+stress-ng: info:  [78184]                     96,600 Cache NODE Write                1.57 K/sec
+stress-ng: info:  [78184]                          0 Cache NODE Write Miss           0.00 /sec 
+stress-ng: info:  [78184]            475,984,134,512 CPU Clock                       7.72 B/sec
+stress-ng: info:  [78184]            475,986,489,040 Task Clock                      7.72 B/sec
+stress-ng: info:  [78184]                        112 Page Faults Total               1.82 /sec 
+stress-ng: info:  [78184]                        112 Page Faults Minor               1.82 /sec 
+stress-ng: info:  [78184]                          0 Page Faults Major               0.00 /sec 
+stress-ng: info:  [78184]                     14,944 Context Switches              242.48 /sec 
+stress-ng: info:  [78184]                     14,904 Cgroup Switches               241.83 /sec 
+stress-ng: info:  [78184]                         56 CPU Migrations                  0.91 /sec 
+stress-ng: info:  [78184]                          0 Alignment Faults                0.00 /sec 
+stress-ng: info:  [78184]                          0 Emulation Faults                0.00 /sec 
+stress-ng: info:  [78184]                         96 Page Faults User                1.56 /sec 
+stress-ng: info:  [78184]                         24 Page Faults Kernel              0.39 /sec 
+stress-ng: info:  [78184]                      1,032 System Call Enter              16.75 /sec 
+stress-ng: info:  [78184]                      1,024 System Call Exit               16.62 /sec 
+stress-ng: info:  [78184]                          0 Kmalloc                         0.00 /sec 
+stress-ng: info:  [78184]                          0 Kmalloc Node                    0.00 /sec 
+stress-ng: info:  [78184]                        320 Kfree                           5.19 /sec 
+stress-ng: info:  [78184]                         80 Kmem Cache Alloc                1.30 /sec 
+stress-ng: info:  [78184]                          0 Kmem Cache Alloc Node           0.00 /sec 
+stress-ng: info:  [78184]                     10,168 Kmem Cache Free               164.98 /sec 
+stress-ng: info:  [78184]                        464 MM Page Alloc                   7.53 /sec 
+stress-ng: info:  [78184]                        408 MM Page Free                    6.62 /sec 
+stress-ng: info:  [78184]                    307,328 RCU Utilization                 4.99 K/sec
+stress-ng: info:  [78184]                        832 Sched Migrate Task             13.50 /sec 
+stress-ng: info:  [78184]                          0 Sched Move NUMA                 0.00 /sec 
+stress-ng: info:  [78184]                     14,608 Sched Wakeup                  237.03 /sec 
+stress-ng: info:  [78184]                          0 Sched Proc Exec                 0.00 /sec 
+stress-ng: info:  [78184]                          0 Sched Proc Exit                 0.00 /sec 
+stress-ng: info:  [78184]                          0 Sched Proc Fork                 0.00 /sec 
+stress-ng: info:  [78184]                          8 Sched Proc Free                 0.13 /sec 
+stress-ng: info:  [78184]                          0 Sched Proc Hang                 0.00 /sec 
+stress-ng: info:  [78184]                          0 Sched Proc Wait                 0.00 /sec 
+stress-ng: info:  [78184]                     14,944 Sched Switch                  242.48 /sec 
+stress-ng: info:  [78184]                          0 Signal Generate                 0.00 /sec 
+stress-ng: info:  [78184]                          8 Signal Deliver                  0.13 /sec 
+stress-ng: info:  [78184]                      2,960 IRQ Entry                      48.03 /sec 
+stress-ng: info:  [78184]                      2,960 IRQ Exit                       48.03 /sec 
+stress-ng: info:  [78184]                     34,384 Soft IRQ Entry                557.91 /sec 
+stress-ng: info:  [78184]                     34,384 Soft IRQ Exit                 557.91 /sec 
+stress-ng: info:  [78184]                          0 NMI handler                     0.00 /sec 
+stress-ng: info:  [78184]                          0 Writeback Dirty Inode           0.00 /sec 
+stress-ng: info:  [78184]                          0 Migrate MM Pages                0.00 /sec 
+stress-ng: info:  [78184]                          0 SKB Consume                     0.00 /sec 
+stress-ng: info:  [78184]                          0 SKB Kfree                       0.00 /sec 
+stress-ng: info:  [78184]                          0 IOMMU IO Page Fault             0.00 /sec 
+stress-ng: info:  [78184]                          0 IOMMU Map                       0.00 /sec 
+stress-ng: info:  [78184]                          0 IOMMU Unmap                     0.00 /sec 
+stress-ng: info:  [78184]                          0 Filemap page-cache add          0.00 /sec 
+stress-ng: info:  [78184]                          0 Filemap page-cache del          0.00 /sec 
+stress-ng: info:  [78184]                          0 OOM Compact Retry               0.00 /sec 
+stress-ng: info:  [78184]                          0 OOM Wake Reaper                 0.00 /sec 
+stress-ng: info:  [78184]                          0 Thermal Zone Trip               0.00 /sec 
+stress-ng: info:  [78184] for a 61.63s run time:
+stress-ng: info:  [78184]     493.04s available CPU time
+stress-ng: info:  [78184]     475.17s user time   ( 96.38%)
+stress-ng: info:  [78184]       0.33s system time (  0.07%)
+stress-ng: info:  [78184]     475.50s total time  ( 96.44%)
+stress-ng: info:  [78184] load average: 6.96 3.62 1.94
+
