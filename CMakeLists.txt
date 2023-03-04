@@ -3,7 +3,9 @@ project(rayblazer)
 
 add_subdirectory(dependencies/minifb)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+
+set (SOURCES src/main.cpp src/vector.hpp)
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Link MiniFB to your project:
 target_link_libraries(${PROJECT_NAME} minifb)
