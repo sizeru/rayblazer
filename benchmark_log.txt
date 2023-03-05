@@ -1,6 +1,7 @@
 Commit | Benchmark | Description
-a457e24 |               | Add in zbuffering and diffuse shaing. buffer access inside of loop 
+a457e24 |  | Add in zbuffering and diffuse shaing. buffer access inside of loop 
 959a3be | 222ms - 226ms | Move access to buffer outside of triangle intersect loop
 
+
 *NOTE: All benchmarks done with default_cube.obj. All benchmarks ignore about
-the first second of running.
+the first second of running. All benchmarks done on fullscreen.

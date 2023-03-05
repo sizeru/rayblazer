@@ -86,9 +86,11 @@ struct Camera {
     Vector direction;
     Plane clipPlane;
 
-    Camera() : 
-            origin(Vec3{0.0, 3.0, 4.0}), 
-            direction(Vec3{0.0, -3.0/5.0, -4.0/5.0}) {}
+    /* Camera constructors. The default position and direction of the camera is
+    a pythagorean quadruple, allowing for basic unit vectors without using
+    square roots*/
+    Camera() :  origin(Vec3{3.0, 2.0, 6.0}), 
+                direction(Vec3{-3.0/7.0, -2.0/7.0, -6.0/7.0}) {}
     
     // Return a vector that shoots from the camera through a pixel
     Vector getPixelRay(u32 x, u32 y);
