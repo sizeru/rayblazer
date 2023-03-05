@@ -1,6 +1,9 @@
 Commit | Benchmark | Description
 a457e24 |  | Add in zbuffering and diffuse shaing. buffer access inside of loop 
 959a3be | 222ms - 226ms | Move access to buffer outside of triangle intersect loop
+8057a71 | ~235ms | Fix rendering orientation & change from two for loops to single for loop.
+LATEST  | ~230ms | Two for loops
+UNROLLING the loop only made this slower still. Let the compiler do its work.
 
 
 *NOTE: All benchmarks done with default_cube.obj. All benchmarks ignore about

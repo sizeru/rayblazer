@@ -49,43 +49,45 @@ int main() {
     do {
         // RENDERING HAPPENS IN THIS LOOP
         auto startTime = std::chrono::high_resolution_clock::now();
-        for (u32 i = 0; i < WIDTH*HEIGHT; i++) { // TODO: Test rendering in columns vs rendering in rows
-            Vector lookDir = scene.camera.getPixelRay(i % WIDTH, i / WIDTH);
-            for (u32 o = 0; o < scene.objects.size(); o++) {
-                Object* obj = &scene.objects[o];
-                f32 minDepth = 10000000.0; // ten million should be enough for all of us
-                Vec3 isectNormal;
-                bool hit = false;
-                for (u32 t = 0; t < obj->triangles.size(); t++) {
-                    // CHECK TRIANGLE INTERSECTION
-                    // TODO: Switch this to using the Havel-Herout intersection algorithm
-                    Vector& normal = obj->triangles[t].normal;
-                    f32 cosine = Vec3::dot(lookDir, normal);
-                    if (cosine > 0) {
-                        continue;
-                    }
-                    Coord& a = obj->vertices[obj->triangles[t].index[0]];
-                    Coord& b = obj->vertices[obj->triangles[t].index[1]];
-                    Coord& c = obj->vertices[obj->triangles[t].index[2]];
-                    
-                    // Check plane intersection
-                    f32 numerator = Vec3::dot(normal, a - scene.camera.origin);
-                    f32 denom = Vec3::dot(lookDir, normal);
-                    f32 depth = numerator / denom;
-                    Vector p = scene.camera.origin + (lookDir * depth);
+        for (u32 y = 0; y < HEIGHT; y++) { // TODO: Test rendering in columns vs rendering in rows
+            for (u32 x = 0; x < WIDTH; x++) {
+                Vector lookDir = scene.camera.getPixelRay(x, y);
+                for (u32 o = 0; o < scene.objects.size(); o++) {
+                    Object* obj = &scene.objects[o];
+                    f32 minDepth = 10000000.0; // ten million should be enough for all of us
+                    Vec3 isectNormal;
+                    bool hit = false;
+                    for (u32 t = 0; t < obj->triangles.size(); t++) {
+                        // CHECK TRIANGLE INTERSECTION
+                        // TODO: Switch this to using the Havel-Herout intersection algorithm
+                        Vector& normal = obj->triangles[t].normal;
+                        f32 cosine = Vec3::dot(lookDir, normal);
+                        if (cosine > 0) {
+                            continue;
+                        }
+                        Coord& a = obj->vertices[obj->triangles[t].index[0]];
+                        Coord& b = obj->vertices[obj->triangles[t].index[1]];
+                        Coord& c = obj->vertices[obj->triangles[t].index[2]];
+                        
+                        // Check plane intersection
+                        f32 numerator = Vec3::dot(normal, a - scene.camera.origin);
+                        f32 denom = Vec3::dot(lookDir, normal);
+                        f32 depth = numerator / denom;
+                        Vector p = scene.camera.origin + (lookDir * depth);
 
-                    bool within_ab = Vec3::dot(Vec3::cross(b - a, p - a), normal) > 0;
-                    bool within_bc = Vec3::dot(Vec3::cross(c - b, p - b), normal) > 0;
-                    bool within_ca = Vec3::dot(Vec3::cross(a - c, p - c), normal) > 0;
-                    if (depth < minDepth && depth > 0 && within_ab && within_bc && within_ca) {
-                        u32 dp = cosine * -255.0;
-                        buffer[i] = 0xff << 24 | dp << 16 | dp << 8 | dp;
+                        bool within_ab = Vec3::dot(Vec3::cross(b - a, p - a), normal) > 0;
+                        bool within_bc = Vec3::dot(Vec3::cross(c - b, p - b), normal) > 0;
+                        bool within_ca = Vec3::dot(Vec3::cross(a - c, p - c), normal) > 0;
+                        if (depth < minDepth && depth > 0 && within_ab && within_bc && within_ca) {
+                            u32 dp = cosine * -255.0;
+                            buffer[y * WIDTH + x] = 0xff << 24 | dp << 16 | dp << 8 | dp;
+                        }
+                        // END TRIANGLE INTERSECTION
                     }
-                    // END TRIANGLE INTERSECTION
+                    // if (hit) {
+
+                    // }
                 }
-                // if (hit) {
-
-                // }
             }
         }
         // RENDERING ENDS HERE
