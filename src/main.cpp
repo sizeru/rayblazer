@@ -10,8 +10,10 @@
 // #define WIDTH FRAMEWORK_WIDTH
 // #define HEIGHT FRAMEWORK_HEIGHT
 #define ARGB_SIZE 4
-#define WIDTH 800
-#define HEIGHT 800
+#define WIDTH FRAMEWORK_WIDTH
+#define HEIGHT FRAMEWORK_HEIGHT
+
+#define MAX_DEPTH 2e24f
 // Everything should be in ARGB
 
 #include <math.h>
@@ -54,15 +56,15 @@ int main() {
                 Vector lookDir = scene.camera.getPixelRay(i, j);
                 for (u32 o = 0; o < scene.objects.size(); o++) {
                     Object* obj = &scene.objects[o];
-                    f32 minDepth = 10000000.0; // ten million should be enough for all of us
-                    Vec3 isectNormal;
                     bool hit = false;
+                    f32 minDepth = MAX_DEPTH;
+                    f32 minCosine; 
                     for (u32 t = 0; t < obj->triangles.size(); t++) {
                         // CHECK TRIANGLE INTERSECTION
                         // TODO: Switch this to using the Havel-Herout intersection algorithm
                         Vector& normal = obj->triangles[t].normal;
-                        f32 cosine = Vec3::dot(lookDir, normal);
-                        if (cosine > 0) {
+                        f32 cosine = Vec3::dot(-lookDir, normal);
+                        if (cosine < 0) { /* Early return on backfaces */
                             continue;
                         }
                         Coord& a = obj->vertices[obj->triangles[t].index[0]];
@@ -79,13 +81,14 @@ int main() {
                         bool within_bc = Vec3::dot(Vec3::cross(c - b, p - b), normal) > 0;
                         bool within_ca = Vec3::dot(Vec3::cross(a - c, p - c), normal) > 0;
                         if (depth < minDepth && depth > 0 && within_ab && within_bc && within_ca) {
-                            f32 dp = Vec3::dot(-lookDir, normal);
-                            if (dp > 0) {
-                                dp *= 255.0;
-                                buffer[i * WIDTH + j] = 0xff << 24 | (u32)dp << 16 | (u32)dp << 8 | (u32)dp;
-                            }
+                            minDepth = depth;
+                            minCosine = cosine;
                         }
                         // END TRIANGLE INTERSECTION
+                    }
+                    if (minDepth < MAX_DEPTH) {
+                        u32 brightness = unsigned(minCosine *= 255.0);
+                        buffer[i * WIDTH + j] = 0xff << 24 | brightness << 16 | brightness << 8 | brightness;
                     }
                     // if (hit) {
 
@@ -96,7 +99,7 @@ int main() {
         // RENDERING ENDS HERE
         // mfb_update_state - Can remove this check if we can verify ourselves that we are doing everything correct
         auto endTime = std::chrono::high_resolution_clock::now();
-        std::cout << "Frametime: " << std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count() << "us" << std::endl;
+        std::cout << "Frametime: " << std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count() << "ms" << std::endl;
         if (STATE_OK != mfb_update_ex(window, buffer, WIDTH, HEIGHT)) {
             window = NULL;
             break;
