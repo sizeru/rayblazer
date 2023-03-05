@@ -55,30 +55,41 @@ int main() {
                 for (u32 o = 0; o < scene.objects.size(); o++) {
                     Object* obj = &scene.objects[o];
                     f32 minDepth = 10000000.0; // ten million should be enough for all of us
+                    Vec3 isectNormal;
+                    bool hit = false;
                     for (u32 t = 0; t < obj->triangles.size(); t++) {
                         // CHECK TRIANGLE INTERSECTION
                         // TODO: Switch this to using the Havel-Herout intersection algorithm
-                        Coord* a = &obj->vertices[obj->triangles[t].index[0]];
-                        Coord* b = &obj->vertices[obj->triangles[t].index[1]];
-                        Coord* c = &obj->vertices[obj->triangles[t].index[2]];
-                        Vector normal = obj->triangles[t].normal;
+                        Vector& normal = obj->triangles[t].normal;
+                        f32 cosine = Vec3::dot(lookDir, normal);
+                        if (cosine > 0) {
+                            continue;
+                        }
+                        Coord& a = obj->vertices[obj->triangles[t].index[0]];
+                        Coord& b = obj->vertices[obj->triangles[t].index[1]];
+                        Coord& c = obj->vertices[obj->triangles[t].index[2]];
                         
                         // Check plane intersection
-                        f32 numerator = Vec3::dot(normal, *a - scene.camera.origin);
+                        f32 numerator = Vec3::dot(normal, a - scene.camera.origin);
                         f32 denom = Vec3::dot(lookDir, normal);
                         f32 depth = numerator / denom;
                         Vector p = scene.camera.origin + (lookDir * depth);
 
-                        bool within_ab = Vec3::dot(Vec3::cross(*b - *a, p - *a), normal) > 0;
-                        bool within_bc = Vec3::dot(Vec3::cross(*c - *b, p - *b), normal) > 0;
-                        bool within_ca = Vec3::dot(Vec3::cross(*a - *c, p - *c), normal) > 0;
-                        if (depth < minDepth && within_ab && within_bc && within_ca) {
-                            auto dp = 255.0 * fabs(Vec3::dot(lookDir, normal));
-                            buffer[i * WIDTH + j] = (u32) dp << 24 | (u32)dp << 16 | (u32)dp << 8 | (u32)dp;
-                            break;
+                        bool within_ab = Vec3::dot(Vec3::cross(b - a, p - a), normal) > 0;
+                        bool within_bc = Vec3::dot(Vec3::cross(c - b, p - b), normal) > 0;
+                        bool within_ca = Vec3::dot(Vec3::cross(a - c, p - c), normal) > 0;
+                        if (depth < minDepth && depth > 0 && within_ab && within_bc && within_ca) {
+                            f32 dp = Vec3::dot(-lookDir, normal);
+                            if (dp > 0) {
+                                dp *= 255.0;
+                                buffer[i * WIDTH + j] = 0xff << 24 | (u32)dp << 16 | (u32)dp << 8 | (u32)dp;
+                            }
                         }
                         // END TRIANGLE INTERSECTION
                     }
+                    // if (hit) {
+
+                    // }
                 }
             }
         }
