@@ -1,8 +1,13 @@
+// #define GLM_FORCE_ALIGNED
+#define GLM_FORCE_SSE2
+
 #include <stdio.h>
 #include "MiniFB_cpp.h"
 #include <chrono>
+#include "glm/glm.hpp"
 #include "parser.hpp"
 #include "primitives.hpp"
+
 
 #define FRAMEWORK_WIDTH 2256
 #define FRAMEWORK_HEIGHT 1504
@@ -61,7 +66,7 @@ int main() {
                         // CHECK TRIANGLE INTERSECTION
                         // TODO: Switch this to using the Havel-Herout intersection algorithm
                         Vector& normal = obj->triangles[t].normal;
-                        f32 cosine = Vec3::dot(lookDir, normal);
+                        f32 cosine = glm::dot(lookDir, normal);
                         if (cosine > 0) {
                             continue;
                         }
@@ -70,14 +75,15 @@ int main() {
                         Coord& c = obj->vertices[obj->triangles[t].index[2]];
                         
                         // Check plane intersection
-                        f32 numerator = Vec3::dot(normal, a - scene.camera.origin);
-                        f32 denom = Vec3::dot(lookDir, normal);
+
+                        f32 numerator = glm::dot(normal, a - scene.camera.origin);
+                        f32 denom = glm::dot(lookDir, normal);
                         f32 depth = numerator / denom;
                         Vector p = scene.camera.origin + (lookDir * depth);
 
-                        bool within_ab = Vec3::dot(Vec3::cross(b - a, p - a), normal) > 0;
-                        bool within_bc = Vec3::dot(Vec3::cross(c - b, p - b), normal) > 0;
-                        bool within_ca = Vec3::dot(Vec3::cross(a - c, p - c), normal) > 0;
+                        bool within_ab = glm::dot(glm::cross(b - a, p - a), normal) > 0; // These lines alone take 100ms
+                        bool within_bc = glm::dot(glm::cross(c - b, p - b), normal) > 0; // These lines alone take 100ms
+                        bool within_ca = glm::dot(glm::cross(a - c, p - c), normal) > 0; // These lines alone take 100ms
                         if (depth < minDepth && depth > 0 && within_ab && within_bc && within_ca) {
                             u32 dp = cosine * -255.0;
                             buffer[y * WIDTH + x] = 0xff << 24 | dp << 16 | dp << 8 | dp;

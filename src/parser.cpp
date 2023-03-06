@@ -3,6 +3,9 @@
 #include <string>
 #include <iostream>
 #include "parser.hpp"
+#include <vector>
+#define GLM_FORCE_INTRINSICS
+#include <glm/glm.hpp>
 // Parses scene files exported from other programs and puts them in a format
 // which is quicker to calculate with.
 
@@ -60,18 +63,16 @@ Object parse_object(const char* fileName) {
             triangle.index[2] = atoi(index) - 1; 
             // For now we calculate the normal.
             // TODO: Use the per vertex normals
-            auto &a = object.vertices[triangle.index[0]];
-            auto &b = object.vertices[triangle.index[1]];
-            auto &c = object.vertices[triangle.index[2]];
-            auto cp = Vec3::cross(a - c, b - c);
-            cp.normalize();
-            triangle.normal = cp;
+            glm::vec3 a = object.vertices[triangle.index[0]];
+            glm::vec3 b = object.vertices[triangle.index[1]];
+            glm::vec3 c = object.vertices[triangle.index[2]];
+            triangle.normal = glm::normalize(glm::cross(a - c, b - c));
             object.triangles.push_back(triangle);
         }
         line = strtok(NULL, "\r\n");
     }
 
-    // #ifdef DEBUG
+    #ifdef DEBUG
     std::cout << "Vertices: " << object.vertices.size() << " | Triangles: " << object.triangles.size() << std::endl;
     for (int i = 0; i < object.triangles.size(); i++) {
         std::cout << "Triangle: " << object.triangles[i] << std::endl;
@@ -80,7 +81,7 @@ Object parse_object(const char* fileName) {
     for (int i = 0; i < object.vertices.size(); i++) {
         std::cout << "Vertex: " << object.vertices[i] << std::endl;
     }
-    // #endif
+    #endif
 
     return object;
 }

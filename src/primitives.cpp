@@ -1,4 +1,6 @@
 #include "primitives.hpp"
+#define GLM_FORCE_INTRINSICS
+#include <glm/glm.hpp>
 #include <iostream>
 #define CAM_DISTANCE 0.125f /* distance of camera from render plane */
 
@@ -12,20 +14,17 @@ std::ostream &operator<<(std::ostream &os, Vector const& v) {
 }
 
 Vector Camera::getPixelRay(u32 x, u32 y) {
-    Coord target = clipPlane.start + clipPlane.right * UNIT*x + clipPlane.down * UNIT*y;
+    Coord target = clipPlane.start + clipPlane.right * UNIT * float(x) + clipPlane.down * UNIT * float(y);
     Vector pixelVec = target - origin;
-    pixelVec.normalize();
-    return pixelVec;
+    return glm::normalize(pixelVec);
 }
 
 void Camera::generatePlane(f32 width, f32 height) {
     Plane plane;
-    Vector left = Vec3::cross(direction, Vec3{0.0, -1.0, 0.0});
-    Vector up = Vec3::cross(direction, left);
-    left.normalize();
-    up.normalize();
-    f32 halfWidth = width / 2.0;
-    f32 halfHeight = height / 2.0;
+    Vector left = glm::normalize(glm::cross(direction, Vec3{0.0, -1.0, 0.0}));
+    Vector up = glm::normalize(glm::cross(direction, left));
+    float halfWidth = width / 2.0;
+    float halfHeight = height / 2.0;
     
     plane.start = origin + (direction*CAM_DISTANCE) + (left*halfWidth*UNIT) + (up*halfHeight*UNIT);
     plane.right = -left;
