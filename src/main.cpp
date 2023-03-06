@@ -1,5 +1,4 @@
-// #define GLM_FORCE_ALIGNED
-#define GLM_FORCE_SSE2
+#define GLM_FORCE_INTRINSICS
 
 #include <stdio.h>
 #include "MiniFB_cpp.h"
@@ -7,7 +6,6 @@
 #include "glm/glm.hpp"
 #include "parser.hpp"
 #include "primitives.hpp"
-
 
 #define FRAMEWORK_WIDTH 2256
 #define FRAMEWORK_HEIGHT 1504
@@ -53,46 +51,43 @@ int main() {
 
     do {
         // RENDERING HAPPENS IN THIS LOOP
+        // TODO: Current performance is about 250ms per frame on a single core. This needs to be approximately 16x faster. Try running 16 threads?
+        // TODO: Either stick with glm and make AVX work or revert to the custom implementation
         auto startTime = std::chrono::high_resolution_clock::now();
-        for (u32 y = 0; y < HEIGHT; y++) { // TODO: Test rendering in columns vs rendering in rows
-            for (u32 x = 0; x < WIDTH; x++) {
-                Vector lookDir = scene.camera.getPixelRay(x, y);
-                for (u32 o = 0; o < scene.objects.size(); o++) {
-                    Object* obj = &scene.objects[o];
-                    f32 minDepth = 10000000.0; // ten million should be enough for all of us
-                    Vec3 isectNormal;
-                    bool hit = false;
-                    for (u32 t = 0; t < obj->triangles.size(); t++) {
-                        // CHECK TRIANGLE INTERSECTION
-                        // TODO: Switch this to using the Havel-Herout intersection algorithm
-                        Vector& normal = obj->triangles[t].normal;
-                        f32 cosine = glm::dot(lookDir, normal);
-                        if (cosine > 0) {
-                            continue;
-                        }
-                        Coord& a = obj->vertices[obj->triangles[t].index[0]];
-                        Coord& b = obj->vertices[obj->triangles[t].index[1]];
-                        Coord& c = obj->vertices[obj->triangles[t].index[2]];
-                        
-                        // Check plane intersection
-
-                        f32 numerator = glm::dot(normal, a - scene.camera.origin);
-                        f32 denom = glm::dot(lookDir, normal);
-                        f32 depth = numerator / denom;
-                        Vector p = scene.camera.origin + (lookDir * depth);
-
-                        bool within_ab = glm::dot(glm::cross(b - a, p - a), normal) > 0; // These lines alone take 100ms
-                        bool within_bc = glm::dot(glm::cross(c - b, p - b), normal) > 0; // These lines alone take 100ms
-                        bool within_ca = glm::dot(glm::cross(a - c, p - c), normal) > 0; // These lines alone take 100ms
-                        if (depth < minDepth && depth > 0 && within_ab && within_bc && within_ca) {
-                            u32 dp = cosine * -255.0;
-                            buffer[y * WIDTH + x] = 0xff << 24 | dp << 16 | dp << 8 | dp;
-                        }
-                        // END TRIANGLE INTERSECTION
+        for (u32 i = 0; i < WIDTH*HEIGHT; i++) { // TODO: Test rendering in columns vs rendering in rows
+            Vector lookDir = scene.camera.getPixelRay(i % WIDTH, i / WIDTH);
+            for (u32 o = 0; o < scene.objects.size(); o++) {
+                Object* obj = &scene.objects[o];
+                f32 minDepth = 10000000.0; // ten million should be enough for all of us
+                Vec3 isectNormal;
+                bool hit = false;
+                for (u32 t = 0; t < obj->triangles.size(); t++) {
+                    // CHECK TRIANGLE INTERSECTION
+                    // TODO: Switch this to using the Havel-Herout intersection algorithm
+                    Vector& normal = obj->triangles[t].normal;
+                    f32 cosine = glm::dot(lookDir, normal);
+                    if (cosine > 0) {
+                        continue;
                     }
-                    // if (hit) {
+                    Coord& a = obj->vertices[obj->triangles[t].index[0]];
+                    Coord& b = obj->vertices[obj->triangles[t].index[1]];
+                    Coord& c = obj->vertices[obj->triangles[t].index[2]];
+                    
+                    // Check plane intersection
 
-                    // }
+                    f32 numerator = glm::dot(normal, a - scene.camera.origin);
+                    f32 denom = glm::dot(lookDir, normal);
+                    f32 depth = numerator / denom;
+                    Vector p = scene.camera.origin + (lookDir * depth);
+
+                    bool within_ab = glm::dot(glm::cross(b - a, p - a), normal) > 0; // These lines alone take 100ms
+                    bool within_bc = glm::dot(glm::cross(c - b, p - b), normal) > 0; // These lines alone take 100ms
+                    bool within_ca = glm::dot(glm::cross(a - c, p - c), normal) > 0; // These lines alone take 100ms
+                    if (depth < minDepth && depth > 0 && within_ab && within_bc && within_ca) {
+                        u32 dp = cosine * -255.0;
+                        buffer[i] = 0xff << 24 | dp << 16 | dp << 8 | dp;
+                    }
+                    // END TRIANGLE INTERSECTION
                 }
             }
         }

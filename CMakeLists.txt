@@ -4,6 +4,10 @@ project(rayblazer)
 add_subdirectory(dependencies/minifb)
 add_subdirectory(dependencies/glm)
 
+add_compile_options(
+    -mavx512f
+)
+
 set (SOURCES src/main.cpp src/primitives.hpp src/primitives.cpp src/parser.hpp src/parser.cpp)
 add_executable(${PROJECT_NAME} ${SOURCES})
 

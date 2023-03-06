@@ -7,7 +7,8 @@ UNROLLING the loop only made this slower still. Let the compiler do its work.
 STORING actual triangle vertices rather than indices of coordinates made a minimal impact, 
         but did make an impact (1 or 2 ms). Some potential savings here.
 ~ 235ms - Switching to GLM seems to be slower for now
+~195ms | Intrinsics - Using appropriate CPU instructions.
 
 
 *NOTE: All benchmarks done with default_cube.obj. All benchmarks ignore about
-the first second of running. All benchmarks done on fullscreen.
+the first second of running. All benchmarks done on fullscreen. Our target is 128ms

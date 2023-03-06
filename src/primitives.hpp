@@ -29,7 +29,7 @@ struct Ray {
     Vector direction;
 };
 
-struct /*alignas(16) */ Triangle {
+struct alignas(16) Triangle { // 16-byte align fits better on cache lines"
     // The bare minimum data we're going to need right now is:
     // - 3 object vertices in each triangle
     // - 1 normal per triangle
