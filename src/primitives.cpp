@@ -2,7 +2,6 @@
 #define GLM_FORCE_INTRINSICS
 #include <glm/glm.hpp>
 #include <iostream>
-#define CAM_DISTANCE 0.125f /* distance of camera from render plane */
 
 std::ostream &operator<<(std::ostream &os, Triangle const& t) {
     return os << "Indices: (" << t.index[0] << ", " << t.index[1] << ", " << t.index[2] << 

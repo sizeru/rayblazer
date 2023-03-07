@@ -6,6 +6,7 @@
 #include <vector>
 #define GLM_FORCE_INTRINSICS
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 typedef uint8_t  u8;
 typedef uint16_t u16;
@@ -19,8 +20,10 @@ typedef float    f32;
 typedef double   f64;
 
 #define UNIT 2e-4f /* Smallest unit of length in this project */
+#define CAM_DISTANCE 0.5f /* distance of camera from render plane. AKA FOV */
 
 typedef glm::vec3 Vec3, Coord, Vertex, Vector;
+typedef glm::vec4 Vec4;
 
 std::ostream &operator<<(std::ostream &os, Vector const& v);
 
@@ -34,8 +37,11 @@ struct alignas(16) Triangle { // 16-byte align fits better on cache lines"
     // - 3 object vertices in each triangle
     // - 1 normal per triangle
     // > Therefore 6 floats per triangle
+    
+    // By the Havel-Herout, algo a triangle is defined by 3 planes
     u32 index[3];
-    Vec3 normal;
+    Vec3 normal; // Used for Havel-Herout algo
+
 };
 
 struct Object {

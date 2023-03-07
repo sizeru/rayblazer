@@ -4,10 +4,9 @@ a457e24 |  | Add in zbuffering and diffuse shaing. buffer access inside of loop
 8057a71 | ~235ms | Fix rendering orientation & change from two for loops to single for loop.
 LATEST  | ~230ms | Two for loops
 UNROLLING the loop only made this slower still. Let the compiler do its work.
-STORING actual triangle vertices rather than indices of coordinates made a minimal impact, 
-        but did make an impact (1 or 2 ms). Some potential savings here.
-~ 235ms - Switching to GLM seems to be slower for now
-~195ms | Intrinsics - Using appropriate CPU instructions.
+STORING actual triangle vertices rather than indices of coordinates made a minimal impact, but did make an impact (1 or 2 ms). Debatable savings. Could go bad for larger scenes
+c68059d | ~235ms | Switching to GLM as a vector library. Seems to be slower for now
+60f66fe | ~195ms | Intrinsics - Using vector math CPU instructions. Big jump, although, the previous slowdown from glm makes me wonder whether rolling my own could be more beneficial for squeezing out a few ms.
 
 
 *NOTE: All benchmarks done with default_cube.obj. All benchmarks ignore about
