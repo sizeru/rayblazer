@@ -76,19 +76,19 @@ void renderRange(u32 startPixel, u32 endPixel, Scene* scene, u32* frameBuffer) {
     // TODO: Potential savings by allowing for quads as planes as well as triangles. 2 tris = 1 quad. Maybe this is canceled out by BVH.
     // TODO: Potential savings through smart upscaling
     for (u32 i = startPixel; i < endPixel; i++) { // TODO: Test rendering in columns vs rendering in rows
-        Vector lookDir = scene->camera.getPixelRay(i % WIDTH, i / WIDTH);
+        Vec3 lookDir = scene->camera.getPixelRay(i % WIDTH, i / WIDTH);
         for (u32 o = 0; o < scene->objects.size(); o++) {
             Object* obj = &scene->objects[o];
             f32 minDepth = 10000000.0; // ten million should be enough for all of us
-            Vec3 isectNormal;
             bool hit = false;
             for (u32 t = 0; t < obj->triangles.size(); t++) {
                 // CHECK TRIANGLE INTERSECTION
                 // TODO: Switch this to using the Havel-Herout intersection algorithm
-                // TODO: Use a BVH w/ refitting or Octree or BVH w/ Morton Code
-                Vector& normal = obj->triangles[t].normal;
+                // TODO: Use a BVH w/ refitting or Sweep BVH or Octree or BVH w/ Morton Code
+                Vec3& normal = obj->triangles[t].normal;
                 f32 cosine = glm::dot(lookDir, normal);
-                if (cosine > 0) {
+                bool backface = cosine > 0;
+                if (backface) {
                     continue;
                 }
                 Coord& a = obj->vertices[obj->triangles[t].index[0]];
@@ -100,15 +100,16 @@ void renderRange(u32 startPixel, u32 endPixel, Scene* scene, u32* frameBuffer) {
                 f32 numerator = glm::dot(normal, a - scene->camera.origin);
                 f32 denom = glm::dot(lookDir, normal);
                 f32 depth = numerator / denom;
-                Vector p = scene->camera.origin + (lookDir * depth);
+                Vec3 p = scene->camera.origin + (lookDir * depth);
 
                 bool within_ab = glm::dot(glm::cross(b - a, p - a), normal) > 0; // These lines alone take 100ms
                 bool within_bc = glm::dot(glm::cross(c - b, p - b), normal) > 0; // These lines alone take 100ms
                 bool within_ca = glm::dot(glm::cross(a - c, p - c), normal) > 0; // These lines alone take 100ms
-                if (depth < minDepth && depth > 0 && within_ab && within_bc && within_ca) {
-                    u32 dp = cosine * -255.0;
-                    frameBuffer[i] = 0xff << 24 | dp << 16 | dp << 8 | dp;
-                }
+                bool replace = depth < minDepth && depth > 0 && within_ab && within_bc && within_ca;
+                u32 newColor = cosine * -255.0 * replace;
+                u32 oldColor = frameBuffer[i];
+                u32 px = oldColor * !replace + newColor * replace;
+                frameBuffer[i] = 0xff << 24 | px << 16 | px << 8 | px;
                 // END TRIANGLE INTERSECTION
             }
         }

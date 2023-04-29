@@ -22,14 +22,14 @@ typedef double   f64;
 #define UNIT 2e-4f /* Smallest unit of length in this project */
 #define CAM_DISTANCE 0.5f /* distance of camera from render plane. AKA FOV */
 
-typedef glm::vec3 Vec3, Coord, Vertex, Vector;
+typedef glm::vec3 Vec3, Coord, Vertex;
 typedef glm::vec4 Vec4;
 
-std::ostream &operator<<(std::ostream &os, Vector const& v);
+std::ostream &operator<<(std::ostream &os, Vec3 const& v);
 
 struct Ray {
     Coord origin;
-    Vector direction;
+    Vec3 direction;
 };
 
 struct alignas(16) Triangle { // 16-byte align fits better on cache lines"
@@ -52,7 +52,7 @@ struct Object {
     Object(Coord origin) : origin(origin) {}
     Object() : origin() {}
 
-    // inline Vector vertexAt(u32 index) {
+    // inline Vec3 vertexAt(u32 index) {
     //     return vertices[index];
     // }
 };
@@ -63,12 +63,12 @@ struct Plane {
     // planes, to sync up with the screen coordinate system, Start have +X
     // facing right and +Y facing down.
     Coord start;
-    Vector down, right;
+    Vec3 down, right;
 };
 
 struct Camera {
     Coord origin;
-    Vector direction;
+    Vec3 direction;
     Plane clipPlane;
 
     /* Camera constructors. The default position and direction of the camera is
@@ -78,7 +78,7 @@ struct Camera {
                 direction(Vec3{-3.0/7.0, -2.0/7.0, -6.0/7.0}) {}
     
     // Return a vector that shoots from the camera through a pixel
-    Vector getPixelRay(u32 x, u32 y);
+    Vec3 getPixelRay(u32 x, u32 y);
     void generatePlane(f32 width, f32 height);
 };
 

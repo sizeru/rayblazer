@@ -8,20 +8,20 @@ std::ostream &operator<<(std::ostream &os, Triangle const& t) {
             ") Normal: [" << t.normal.x << ", " << t.normal.y << ", " << t.normal.z << "]";
 }
 
-std::ostream &operator<<(std::ostream &os, Vector const& v) {
+std::ostream &operator<<(std::ostream &os, Vec3 const& v) {
     return os << "[" << v.x << ", " << v.y << ", " << v.z << "]";
 }
 
-Vector Camera::getPixelRay(u32 x, u32 y) {
+Vec3 Camera::getPixelRay(u32 x, u32 y) {
     Coord target = clipPlane.start + clipPlane.right * UNIT * float(x) + clipPlane.down * UNIT * float(y);
-    Vector pixelVec = target - origin;
+    Vec3 pixelVec = target - origin;
     return glm::normalize(pixelVec);
 }
 
 void Camera::generatePlane(f32 width, f32 height) {
     Plane plane;
-    Vector left = glm::normalize(glm::cross(direction, Vec3{0.0, -1.0, 0.0}));
-    Vector up = glm::normalize(glm::cross(direction, left));
+    Vec3 left = glm::normalize(glm::cross(direction, Vec3{0.0, -1.0, 0.0}));
+    Vec3 up = glm::normalize(glm::cross(direction, left));
     float halfWidth = width / 2.0;
     float halfHeight = height / 2.0;
     
